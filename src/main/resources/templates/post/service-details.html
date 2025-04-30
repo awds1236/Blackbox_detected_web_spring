@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>신고 게시글 작성</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link th:href="@{/assets/img/car_favicon.png}" rel="icon">
+  <link th:href="@{/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/glightbox/css/glightbox.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/swiper/swiper-bundle.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/aos/aos.css}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link th:href="@{/assets/css/main.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+      <a href="/" class="logo d-flex align-items-center">
+        <h1>BBUMAS</h1>
+      </a>
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li sec:authorize="hasAuthority('SPECIAL')">
+            <a href="/video">Video</a>
+          </li>
+          <li class="dropdown"><a href="/post" class="active"><span>Post</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+            <ul>
+              <li><a href="/post">신고 게시판 목록</a></li>
+              <li sec:authorize="isAuthenticated()">
+                <a href="/post/posting">신고하기</a>
+              </li>
+              <li><a href="/post/faq">FAQ</a></li>
+            </ul>
+          </li>
+          <li><a href="/map">Map</a></li>
+          <li sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}" class="get-a-quote">Logout</a>
+          </li>
+          <li sec:authorize="isAnonymous()">
+            <a class="get-a-quote" href="/login">Login</a>
+          </li>
+        </ul>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+
+
+  <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="breadcrumbs">
+      <div class="short-page-header d-flex align-items-center">
+        <div class="container position-relative">
+        </div>
+      </div>
+      <nav>
+        <div class="container">
+          <ol>
+            <li><a href="/">홈</a></li>
+            <li><a href="/post">게시글 목록</a></li>
+            <li>게시글 작성하기</li>
+          </ol>
+        </div>
+      </nav>
+    </div><!-- End Breadcrumbs -->
+
+    <!-- ======= Service Details Section ======= -->
+    <form method="post" enctype="multipart/form-data" th:action="@{/post/posting}">
+      <!-- CSRF 토큰은 Thymeleaf와 Spring Security의 통합 기능에 의해 자동으로 추가됩니다 -->
+      <section id="service-details" class="service-details">
+        <div class="container" data-aos="fade-up">
+
+          <table id="bd-table">
+
+            <tr style="border-bottom: 1px solid #ccc;">
+              <td style="background-color:#f3f6fc;">신고 유형</td>
+              <td style="float:left; margin: 10px; margin-left: 40px;">
+                <select id="report_type" name="report_type" class="form-control">
+                  <option value="도로 위 안전 시설물">도로 위 안전 시설물</option>
+                  <option value="보행/교통 안전">보행/교통 안전</option>
+                  <option value="취약시설물">취약시설물</option>
+                  <option value="기타">기타</option>
+                </select>
+              </td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #ccc;">
+              <td style="background-color:#f3f6fc;">제목</td>
+              <td>
+                <div class="title">
+                  <dd><input type="text" id="post_title" name="post_title" class="form-control" required /></dd>
+                </div>
+              </td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #ccc;">
+              <td style="background-color:#f3f6fc; padding: 20px; vertical-align: top;">파일 업로드</td>
+              <td>
+                <label for="post_image" class="file-label">파일 선택</label>
+                <input type="file" id="post_image" name="post_image" style="display: none;" accept="image/*" /> 
+                <form id='img_form'>
+                  <input type="reset" id="fileReset" style="display: none;"> 
+                
+                  
+                  <!-- Use this reset button inside the img_form -->
+                  <button type="button" onclick="resetImgForm()" class='reset-label'>파일 제거</button>
+  
+                  <div>
+                    <!-- 업로드 파일 정보 테이블 -->
+                    <table id="imgfile-table">
+                      <tr>
+                        <th class="fn-th" scope="row">파일 이름</th>
+                        <th class="fs-th" scope="row">파일 크기</th>
+                      </tr>
+                      <tr>
+                        <td id="filename"></td>
+                        <td id="filesize"></td>
+                      </tr>
+                    </table>
+                    
+                  </div>
+                </form>
+
+                <div class="upload-box">
+                  <div id="drop-file" class="drag-file">
+                    <p class="message">파일을 선택하거나 이곳에 드래그하여 업로드하세요.</p>
+                    <br>
+                    <img src="https://img.icons8.com/pastel-glyph/2x/image-file.png" alt="파일 아이콘" class="image">
+                    <img src="" alt="미리보기 이미지" class="preview" id="preview">
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <tr style="border-bottom: 1px solid #ccc;">
+              <td style="background-color:#f3f6fc; padding: 20px; vertical-align: top;">신고 내용</td>
+              <td>
+                <textarea id="post_content" name="post_content" rows="6" class="form-control" required></textarea>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="background-color:#f3f6fc; padding: 20px; vertical-align: top;">개인정보 수집 동의</td>
+              <td>
+                <article style="float:left; margin-top: 15px; margin-left: 40px;">
+                  <div class="radio">
+                    <label for="agreeUseMyInfo1">
+                      <input type="radio" name="agreeUseMyInfo" id="agreeUseMyInfo1" value="Y">
+                      <span onkeypress="if(event.keyCode==13) {javascript:$$.KeyCheck('agreeUseMyInfo','Y'); return false;}" style="opacity: 0;"></span>
+                      <span class="txt">예</span>
+                    </label>
+                    <label for="agreeUseMyInfo2">
+                        <input type="radio" name="agreeUseMyInfo" id="agreeUseMyInfo2" value="N" checked="">
+                        <span onkeypress="if(event.keyCode==13) {javascript:$$.KeyCheck('agreeUseMyInfo','N'); return false;}" style="opacity: 0;"></span>
+                        <span class="txt">아니오</span>
+                    </label>
+                  </div>
+                </article>
+    
+                <!-- 내용보기 가리기 -->
+                <button type="button" class="button btnWmd moreBtn" data-toggle="collapse" data-target="#singoPerson" aria-expanded="false" aria-controls="singoPerson" onclick="toggleContent()">내용보기  
+                <i class="fa fa-angle-down" aria-hidden="true"></i></button>
+                
+                <div class="moreView">
+                  <article class="moreDoc collapse done" id="singoPerson" style="display: none;">
+                    <h4 style="font-size:17px; color:#666;">1. 개인정보의 수집 및 이용 목적(개인정보보호법 제15조)</h4>
+                    <p>블랙박스를 활용한 도로정비 자동화 시스템(BBUMAS)은 관계법령 등에서 정하는 소관 업무의 수행을 위하여 다음과 같이 개인정보를 수집 및 이용합니다. 수집된 개인정보는 정해진 목적 이외의 용도로는 이용되지 않으며 수집 목적이 변경될 경우 사전에 알리고 동의를 받을 예정입니다. </p>
+                    <p>※ 관계법령 등 : 민원사무 처리에 관한 법률 및 동법 시행령, 행정안전부의 설치와 운영에 관한 법률, 전자정부법 및 동법 시행령 등</p>
+                    <ul>
+                        <li>가. 민원사무 접수·처리·사후관리 서비스 제공민원신청서에 포함된 개인정보는 민원의 접수·처리 등 소관 업무 수행을 위해 행정·공공기관에서 이용합니다.</li>
+                        <li>나. 타 행정·공공기관 시스템 이용민원사무의 전자적 처리를 위해 내부적으로 타 시스템 연계 및 이용 시 개인정보를 이용합니다.</li>
+                        <li>다. 블랙박스를 활용한 도로정비 자동화 시스템(BBUMAS) 정책지원 블랙박스를 활용한 도로정비 자동화 시스템(BBUMAS) 서비스 향상 및 정책평가를 위하여 접수된 민원은 관계 법령에 따라 분석·평가 및 처리결과의 사후관리를 시행합니다.</li>
+                    </ul>
+                    <br>
+                    <h4 style="font-size:17px; color:#666;">2. 수집하는 개인정보의 항목(개인정보보호법 제15조, 제16조)</h4>
+                    <ul>
+                        <li>가. 필수항목: 위치 정보(GPS)</li>
+                        <li>나. 자동수집항목: IP(Internet Protocol)주소, 이용내용의 기록- 부정한 방법으로 타인명의를 사용하는 경우에 대비하기 위해 정보이용내역 등을 자동수집 합니다.</li>
+                    </ul>
+                    <p>※ 부정한 방법으로 타인명의 사용 시, 주민등록법 제37조(벌칙)에 의해 처벌 받을 수 있습니다. </p>
+                    <br>
+                    <h4 style="font-size:17px; color:#666;">3. 개인정보의 보유 및 이용기간(공공기록물 관리에 관한 법률 시행령 제26조)</h4>
+                    <p>블랙박스를 활용한 도로정비 자동화 시스템(BBUMAS)은 원칙적으로 개인정보 보존기간이 경과하거나, 처리목적이 달성된 경우에는 지체 없이 개인정보를 파기합니다. 다만, 다른 법령에 따라 보존하여야 하는 경우에는 그러하지 않을 수 있습니다.</p>
+                    <ul>
+                        <li><strong class="useAgreeFont">1) 신고, 제안: 3년</strong></li>
+                        <li><strong class="useAgreeFont">2) 회원정보: 회원탈퇴시 즉시 파기</strong></li>
+                        <li><strong class="useAgreeFont">3) 자동수집항목 중 IP주소: 1년</strong></li>
+                    </ul>
+                    <br>
+                    <h4 style="font-size:17px; color:#666;">4. 동의를 거부할 권리가 있다는 사실 및 동의 거부에 따른 불이익 내용(개인정보보호법 제16조)</h4>
+                    <p>민원 신청 시 수집하는 필요한 최소한의 정보 외의 개인정보 수집에 동의를 거부할 권리가 있으나 최소한의 개인정보 수집동의 거부 시에는 민원 신청 서비스가 제한됩니다.</p><br>
+                  </article>
+                </div>
+              </td>
+            </tr>
+
+          </table>
+
+          <input type="hidden" id="latitude" name="latitude">
+          <input type="hidden" id="longitude" name="longitude">
+          <input type="hidden" id="address" name="address">
+
+          <div class="btn-sub">
+            <button type="button" class="btn-btn" style="box-shadow: 2px 2px 2px #dedede;"><a href="/post" style="color:white">이전 페이지로</a></button>
+            <button type="submit" class="btn-s" style="box-shadow: 2px 2px 2px #dedede;">등록하기</button>
+          </div>
+      </div>
+    </form>
+            
+    </section>
+    <!-- End Service Details Section -->
+
+  </main>
+  <!-- End #main -->
+
+  
+  
+  <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e6ea244010ed3342eff6810e6610527d&libraries=services"></script>
+  <script th:inline="javascript">
+    // 현재 위치 가져오기 함수
+    function getCurrentLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          document.getElementById('latitude').value = position.coords.latitude;
+          document.getElementById('longitude').value = position.coords.longitude;
+          
+          // 카카오맵 API로 주소 가져오기
+          var geocoder = new kakao.maps.services.Geocoder();
+          var coord = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          
+          geocoder.coord2Address(coord.getLng(), coord.getLat(), function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              var address = result[0].address.address_name;
+              document.getElementById('address').value = address;
+            }
+          });
+        });
+      } else {
+        alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+      }
+    }
+    
+    // 페이지 로드 시 현재 위치 가져오기
+    window.onload = function() {
+      getCurrentLocation();
+      
+      // 파일 선택 이벤트
+      document.getElementById('post_image').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        
+        // 파일 정보 표시
+        document.getElementById('filename').textContent = file.name;
+        document.getElementById('filesize').textContent = Math.round(file.size / 1024) + ' KB';
+        
+        // 이미지 미리보기
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('preview').src = e.target.result;
+          document.getElementById('preview').style.display = 'block';
+          document.querySelector('.image').style.display = 'none';
+          document.querySelector('.message').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      });
+      
+      // 드래그 앤 드롭 이벤트
+      var dropZone = document.getElementById('drop-file');
+      
+      dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.className = 'drag-file focused';
+      });
+      
+      dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.className = 'drag-file';
+      });
+      
+      dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.className = 'drag-file';
+        
+        var fileInput = document.getElementById('post_image');
+        fileInput.files = e.dataTransfer.files;
+        
+        // 변경 이벤트 트리거
+        var changeEvent = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(changeEvent);
+      });
+    };
+    
+    // 파일 제거 함수
+    function resetImgForm() {
+      document.getElementById('fileReset').click();
+      document.getElementById('filename').textContent = '';
+      document.getElementById('filesize').textContent = '';
+      document.getElementById('preview').src = '';
+      document.getElementById('preview').style.display = 'none';
+      document.querySelector('.image').style.display = 'block';
+      document.querySelector('.message').style.display = 'block';
+    }
+    
+    // 개인정보 처리방침 토글
+    function toggleContent() {
+      var content = document.getElementById('singoPerson');
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+      } else {
+        content.style.display = 'none';
+      }
+    }
+  </script>
+
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span>BBUMAS</span>
+          </a>
+          <p>Black Box Urban Maintenance Automation System</p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/join">Join</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="/">Main</a></li>
+            <li sec:authorize="hasAuthority('SPECIAL')">
+              <a href="/video">Upload Videos</a>
+            </li>
+            <li><a href="/post">Alert Board</a></li>
+            <li sec:authorize="isAuthenticated()">
+              <a href="/post/posting">Write Reports</a>
+            </li>
+            <li><a href="/post/faq">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Policy</h4>
+          <a href="#" style="color: #ffffff99;" onclick="window.open('/login/policy','개인정보 처리방침', 'resizable=no width=800 height=600'); return false">개인정보 처리방침</a>
+          <br><br><br>
+          
+          <h4>Contact Us</h4>
+          <p style="color: #ffffff99;">
+            대전 서구 문정로48번길 30 <br>
+            (탄방동)<br>
+            <strong style="color: #fff;">Email:</strong> ktaivle@kt.com<br>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>KT</span></strong>. All Rights Reserved.
+      </div>
+    </div>
+
+  </footer>
+  <!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  <script th:src="@{/assets/vendor/purecounter/purecounter_vanilla.js}"></script>
+  <script th:src="@{/assets/vendor/glightbox/js/glightbox.min.js}"></script>
+  <script th:src="@{/assets/vendor/swiper/swiper-bundle.min.js}"></script>
+  <script th:src="@{/assets/vendor/aos/aos.js}"></script>
+  <script th:src="@{/assets/vendor/php-email-form/validate.js}"></script>
+
+  <!-- Template Main JS File -->
+  <script th:src="@{/assets/js/main.js}"></script>
+  <script th:src="@{/assets/js/service_details.js}"></script>
+
+</body>
+
+</html>

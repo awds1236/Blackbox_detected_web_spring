@@ -1,0 +1,84 @@
+#map-container {
+  display: flex;
+}
+
+#damage-table {
+  width: 90%;
+  margin-left: 20px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+#damage-table caption {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+#damage-table th,
+#damage-table td {
+  border: 3px solid #fff;
+  padding: 8px;
+  width: 25%;
+  font-size: 0.8em;
+  text-align: center;
+}
+
+#damage-table th {
+  border: 1px solid #fff;
+}
+
+#damage-table thead tr {
+  /*background-color: #808080;*/
+  background-color: #f3f6fc;
+}
+
+#damage-table tbody tr {
+  background-color: #fff;
+}
+
+#damage-table tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+#damage-table tbody tr:hover {
+  background-color: #edeff39b;
+}
+
+.checkbox-cell {
+  width: 5%;
+}
+
+.checkbox-cell input[type="checkbox"] {
+  position: relative;
+  left: 8%;
+  top: 3%
+}
+
+.checkbox-cell2 {
+  width: 5%;
+  border: 0px solid #fff;
+}
+
+.button-group {
+  margin-top: 10px;
+}
+
+.button-group button {
+  margin-right: 10px;
+  padding: 5px 10px;
+}
+
+.search-btn {
+  background-color: #0e1d34d2;
+  margin-left: 10px;
+}
+
+.search-btn:hover {
+  background-color: #0e1d34e8;
+}
+
+#typing {
+  margin-left: 5px;
+  margin-right: 5px;
+}
